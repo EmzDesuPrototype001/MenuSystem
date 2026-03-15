@@ -14,8 +14,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
-public class Menu extends JFrame { //sakjdhakjsdhakjshdkajsdhjkas
+// Sample code comment for git push
+public class Menu extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
