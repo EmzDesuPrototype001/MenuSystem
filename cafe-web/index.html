@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cafe Ordering System</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Tahoma, Arial, sans-serif;
+      background: #f5f0e8;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 24px;
+      color: #3b2a1a;
+      letter-spacing: 1px;
+    }
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto 20px auto;
+    }
+    .section {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 16px;
+    }
+    .section h2 {
+      font-size: 14px;
+      font-weight: bold;
+      color: #6b4226;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #d4a96a;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+    }
+    .item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .item-row label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #3b2a1a;
+      cursor: pointer;
+      flex: 1;
+    }
+    .item-row input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      accent-color: #6b4226;
+      cursor: pointer;
+    }
+    .item-row .price-tag {
+      font-size: 11px;
+      color: #888;
+      white-space: nowrap;
+    }
+    .item-row input[type="number"] {
+      width: 60px;
+      padding: 3px 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 13px;
+      text-align: center;
+    }
+    .bottom-panel {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+    .options-section {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 16px;
+    }
+    .options-section h2 {
+      font-size: 14px;
+      font-weight: bold;
+      color: #6b4226;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #d4a96a;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+    }
+    .radio-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #3b2a1a;
+      cursor: pointer;
+    }
+    .radio-row input[type="radio"] {
+      accent-color: #6b4226;
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+    }
+    button {
+      padding: 12px 32px;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: background 0.2s;
+      width: 160px;
+    }
+    #btnDone {
+      background: #6b4226;
+      color: #fff;
+    }
+    #btnDone:hover { background: #8b5a38; }
+    #btnClear {
+      background: #d4a96a;
+      color: #3b2a1a;
+    }
+    #btnClear:hover { background: #c9943a; }
+    .receipt-section {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 16px;
+      grid-column: span 1;
+    }
+    .receipt-section h2 {
+      font-size: 14px;
+      font-weight: bold;
+      color: #6b4226;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #d4a96a;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+    }
+    #receiptArea {
+      width: 100%;
+      height: 200px;
+      font-family: monospace;
+      font-size: 13px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 8px;
+      resize: vertical;
+      background: #fafafa;
+      color: #3b2a1a;
+    }
+    .error-msg {
+      color: #c0392b;
+      font-size: 12px;
+      margin-top: 4px;
+      display: none;
+    }
+    @media (max-width: 800px) {
+      .main-grid, .bottom-panel { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Cafe Ordering System</h1>
+
+  <div class="main-grid">
+    <!-- COFFEE -->
+    <div class="section">
+      <h2>Coffee</h2>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbEspresso"> Espresso <span class="price-tag">₱120</span></label>
+        <input type="number" id="qtyEspresso" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbAmericano"> Americano <span class="price-tag">₱130</span></label>
+        <input type="number" id="qtyAmericano" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbCappuccino"> Cappuccino <span class="price-tag">₱140</span></label>
+        <input type="number" id="qtyCappuccino" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbCaramel"> Caramel Latte <span class="price-tag">₱150</span></label>
+        <input type="number" id="qtyCaramel" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbMocha"> Mocha <span class="price-tag">₱150</span></label>
+        <input type="number" id="qtyMocha" min="1" placeholder="Qty">
+      </div>
+    </div>
+
+    <!-- NON COFFEE -->
+    <div class="section">
+      <h2>Non-Coffee</h2>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbHotChoco"> Hot Chocolate <span class="price-tag">₱120</span></label>
+        <input type="number" id="qtyHotChoco" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbLemonade"> Fresh Lemonade <span class="price-tag">₱110</span></label>
+        <input type="number" id="qtyLemonade" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbMatcha"> Matcha Latte <span class="price-tag">₱140</span></label>
+        <input type="number" id="qtyMatcha" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbStrawberry"> Strawberry Milk <span class="price-tag">₱130</span></label>
+        <input type="number" id="qtyStrawberry" min="1" placeholder="Qty">
+      </div>
+    </div>
+
+    <!-- PASTRIES -->
+    <div class="section">
+      <h2>Pastries</h2>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbCroissant"> Croissant <span class="price-tag">₱90</span></label>
+        <input type="number" id="qtyCroissant" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbChocoCroissant"> Chocolate Croissant <span class="price-tag">₱100</span></label>
+        <input type="number" id="qtyChocoCroissant" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbBlueberry"> Blueberry Muffin <span class="price-tag">₱110</span></label>
+        <input type="number" id="qtyBlueberry" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbBanana"> Banana Bread <span class="price-tag">₱100</span></label>
+        <input type="number" id="qtyBanana" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbCinnamon"> Cinnamon Roll <span class="price-tag">₱95</span></label>
+        <input type="number" id="qtyCinnamon" min="1" placeholder="Qty">
+      </div>
+    </div>
+
+    <!-- DESSERTS -->
+    <div class="section">
+      <h2>Desserts</h2>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbCheesecake"> Cheesecake <span class="price-tag">₱150</span></label>
+        <input type="number" id="qtyCheesecake" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbChocoCake"> Chocolate Cake <span class="price-tag">₱160</span></label>
+        <input type="number" id="qtyChocoCake" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbBrownies"> Brownies <span class="price-tag">₱120</span></label>
+        <input type="number" id="qtyBrownies" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbDonut"> Donut <span class="price-tag">₱80</span></label>
+        <input type="number" id="qtyDonut" min="1" placeholder="Qty">
+      </div>
+      <div class="item-row">
+        <label><input type="checkbox" id="cbIceCream"> Ice Cream <span class="price-tag">₱90</span></label>
+        <input type="number" id="qtyIceCream" min="1" placeholder="Qty">
+      </div>
+    </div>
+
+    <!-- DISCOUNT & PAYMENT & BUTTONS -->
+    <div class="section">
+      <h2>Discount</h2>
+      <label class="radio-row"><input type="radio" name="discount" id="discStudent"> Student (10% off)</label>
+      <label class="radio-row"><input type="radio" name="discount" id="discSenior"> Senior Citizen (20% off)</label>
+      <label class="radio-row"><input type="radio" name="discount" id="discNone" checked> No Discount</label>
+
+      <h2 style="margin-top:16px;">Payment Method</h2>
+      <label class="radio-row"><input type="radio" name="payment" id="payCash"> Cash</label>
+      <label class="radio-row"><input type="radio" name="payment" id="payOnline"> Online</label>
+
+      <div class="btn-group" style="margin-top: 20px;">
+        <button id="btnDone">DONE</button>
+        <button id="btnClear">CLEAR</button>
+      </div>
+    </div>
+
+    <!-- RECEIPT -->
+    <div class="section">
+      <h2>Receipt</h2>
+      <textarea id="receiptArea" readonly placeholder="Your receipt will appear here..."></textarea>
+    </div>
+  </div>
+
+  <script>
+    const items = [
+      { id: "Espresso",        cbId: "cbEspresso",       qtyId: "qtyEspresso",      price: 120 },
+      { id: "Americano",       cbId: "cbAmericano",      qtyId: "qtyAmericano",     price: 130 },
+      { id: "Cappuccino",      cbId: "cbCappuccino",     qtyId: "qtyCappuccino",    price: 140 },
+      { id: "Caramel Latte",   cbId: "cbCaramel",        qtyId: "qtyCaramel",       price: 150 },
+      { id: "Mocha",           cbId: "cbMocha",          qtyId: "qtyMocha",         price: 150 },
+      { id: "Hot Chocolate",   cbId: "cbHotChoco",       qtyId: "qtyHotChoco",      price: 120 },
+      { id: "Fresh Lemonade",  cbId: "cbLemonade",       qtyId: "qtyLemonade",      price: 110 },
+      { id: "Matcha Latte",    cbId: "cbMatcha",         qtyId: "qtyMatcha",        price: 140 },
+      { id: "Strawberry Milk", cbId: "cbStrawberry",     qtyId: "qtyStrawberry",    price: 130 },
+      { id: "Croissant",       cbId: "cbCroissant",      qtyId: "qtyCroissant",     price: 90  },
+      { id: "Choco Croissant", cbId: "cbChocoCroissant", qtyId: "qtyChocoCroissant",price: 100 },
+      { id: "Blueberry Muffin",cbId: "cbBlueberry",      qtyId: "qtyBlueberry",     price: 110 },
+      { id: "Banana Bread",    cbId: "cbBanana",         qtyId: "qtyBanana",        price: 100 },
+      { id: "Cinnamon Roll",   cbId: "cbCinnamon",       qtyId: "qtyCinnamon",      price: 95  },
+      { id: "Cheesecake",      cbId: "cbCheesecake",     qtyId: "qtyCheesecake",    price: 150 },
+      { id: "Chocolate Cake",  cbId: "cbChocoCake",      qtyId: "qtyChocoCake",     price: 160 },
+      { id: "Brownies",        cbId: "cbBrownies",       qtyId: "qtyBrownies",      price: 120 },
+      { id: "Donut",           cbId: "cbDonut",          qtyId: "qtyDonut",         price: 80  },
+      { id: "Ice Cream",       cbId: "cbIceCream",       qtyId: "qtyIceCream",      price: 90  },
+    ];
+
+    document.getElementById("btnDone").addEventListener("click", function () {
+      let receipt = "========== CAFE RECEIPT ==========\n\n";
+      let total = 0;
+      let hasItems = false;
+      let valid = true;
+
+      for (const item of items) {
+        const cb = document.getElementById(item.cbId);
+        const qtyInput = document.getElementById(item.qtyId);
+        if (cb.checked) {
+          const qtyVal = qtyInput.value.trim();
+          const qty = parseInt(qtyVal);
+          if (!qtyVal || isNaN(qty) || qty <= 0) {
+            alert("Please enter a valid quantity for: " + item.id);
+            qtyInput.focus();
+            valid = false;
+            break;
+          }
+          const cost = qty * item.price;
+          total += cost;
+          receipt += item.id + " x" + qty + " = \u20b1" + cost.toFixed(2) + "\n";
+          hasItems = true;
+        }
+      }
+
+      if (!valid) return;
+      if (!hasItems) {
+        alert("Please select at least one item.");
+        return;
+      }
+
+      receipt += "\n-----------------------------\n";
+
+      if (document.getElementById("discStudent").checked) {
+        total *= 0.90;
+        receipt += "Student Discount Applied (10%)\n";
+      } else if (document.getElementById("discSenior").checked) {
+        total *= 0.80;
+        receipt += "Senior Citizen Discount Applied (20%)\n";
+      }
+
+      receipt += "\nTOTAL: \u20b1" + total.toFixed(2) + "\n";
+
+      if (document.getElementById("payCash").checked) {
+        receipt += "Payment Mode: Cash\n";
+      } else if (document.getElementById("payOnline").checked) {
+        receipt += "Payment Mode: Online\n";
+      }
+
+      document.getElementById("receiptArea").value = receipt;
+    });
+
+    document.getElementById("btnClear").addEventListener("click", function () {
+      document.getElementById("receiptArea").value = "";
+      for (const item of items) {
+        document.getElementById(item.cbId).checked = false;
+        document.getElementById(item.qtyId).value = "";
+      }
+      document.getElementById("discNone").checked = true;
+      document.querySelectorAll('input[name="payment"]').forEach(r => r.checked = false);
+    });
+  </script>
+</body>
+</html>
